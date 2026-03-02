@@ -1,24 +1,33 @@
 import requests
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+import os
+
+token = os.getenv("GITHUB_TOKEN")
+header = {}
+if token:
+    header["Authorization"] = f"token {token}"
 
 @api_view(['GET'])
 def analyze_profile(request,username):
     profile_url = f"https://api.github.com/users/{username}"
     repos_url = f"https://api.github.com/users/{username}/repos"
 
-    profile_response = requests.get(profile_url)
-    repos_response = requests.get(repos_url)
-
+    profile_response = requests.get(profile_url, headers = headers)
+    repos_response = requests.get(repos_url, headders = headers)
+    
 
     if profile_response.status_code != 200:
         return Response({"error": "User not found"}, status=404)
     
     profile_data = profile_response.json()
     repos_data = repos_response.json()
+
     total_stars = 0
     language_count = {}
     top_repos = []
+
+    #calculate stars and languages used
 
     for repo in repos_data:
         total_stars += repo.get("stargazers_count",0)
@@ -28,6 +37,8 @@ def analyze_profile(request,username):
         if language:
             language_count[language] = language_count.get(language, 0) + 1
 
+
+
     # Sort repos by stars
     sorted_repos = sorted(
         repos_data,
@@ -35,12 +46,20 @@ def analyze_profile(request,username):
         reverse=True
     )
 
+    # check readme for top 5 repo
     for repo in sorted_repos[:5]:
+        readme_url = f"https://api.github.com/repos/{username}/{repo['name']}/readme"
+        readme_response = requests.get(readme_url)
+
+        readme_present = readme_response.status_code == 200
+
+
         top_repos.append({
             "name": repo['name'],
             "stars": repo['stargazers_count'],
             "language": repo['language'],
-            "url": repo['html_url']
+            "url": repo['html_url'],
+            "readme_present": readme_present
         })
 
     return Response({
