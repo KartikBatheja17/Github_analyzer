@@ -1,9 +1,44 @@
-body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: linear-gradient(to right, #667eea, #764ba2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+@import "tailwindcss";
+
+/* Premium Red Beam Style */
+
+.beam {
+    box-shadow: 0 0 120px rgb(255, 0, 0);
+    position: absolute;
+    width: 400px;
+    height: 500px;
+    background: linear-gradient( 100deg, transparent, rgba(255, 255, 0, 0.4), transparent);
+    filter: blur(50px);
+    opacity: 0.6;
+    animation: floatBeam 1s ease-in-out infinite alternate;
+}
+
+
+/* Positions */
+
+.beam1 {
+    top: 10%;
+    left: 5%;
+}
+
+.beam2 {
+    top: 40%;
+    left: 40%;
+}
+
+.beam3 {
+    top: 20%;
+    left: 75%;
+}
+
+
+/* Subtle Floating Motion */
+
+@keyframes floatBeam {
+    0% {
+        transform: translateY(0px) translateX(0px);
+    }
+    100% {
+        transform: translateY(40px) translateX(20px);
+    }
 }

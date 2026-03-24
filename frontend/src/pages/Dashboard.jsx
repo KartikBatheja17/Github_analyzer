@@ -1,168 +1,263 @@
 import React, { useState } from "react";
 import { analyzerUser } from "../services/api";
+import LanguageChart from "../components/LanguageChart";
+import SkeletonCard from "../components/SkeletonCard";
 
 function Dashboard() {
+
   const [username, setUsername] = useState("");
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSearch = async () => {
+
     if (!username) return;
 
     try {
+
       setLoading(true);
       setError("");
       setData(null);
 
       const res = await analyzerUser(username);
+
+      console.log("API DATA:", res.data);
+
       setData(res.data);
+
     } catch (err) {
+
       setError("User not found");
+
     } finally {
+
       setLoading(false);
+
     }
+
   };
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>GitHub Analyzer 🚀</h1>
 
-      <div style={styles.searchBox}>
+    <div className="min-h-screen bg-black relative overflow-hidden flex flex-col items-center p-8">
+
+      {/* Background Animation */}
+      <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
+        <div className="beam beam1"></div>
+        <div className="beam beam2"></div>
+        <div className="beam beam3"></div>
+      </div>
+
+      <h1 className="text-4xl font-bold mb-8 text-white">
+        GitHub Analyzer 
+      </h1>
+
+      {/* Search Box */}
+      <div className="flex gap-2 mb-8 text-white">
+
         <input
           type="text"
           placeholder="Enter GitHub username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          style={styles.input}
+          className="px-4 py-2 border-2 rounded-lg w-40 border-pink-950"
         />
-        <button onClick={handleSearch} style={styles.button}>
+
+        <button
+          onClick={handleSearch}
+          className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700"
+        >
           Analyze
         </button>
+
       </div>
 
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {/* Error */}
+      {error && (
+        <p className="text-red-500 mb-4">
+          {error}
+        </p>
+      )}
 
-      {data && (
-        <div style={styles.card}>
-          <img
-            src={data.profile?.avatar}
-            alt="avatar"
-            style={styles.avatar}
-          />
+      {/* Skeleton Loading */}
+      {loading && (
 
-          <h2>{data.profile?.name}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
 
-          <div style={styles.stats}>
-            <div>
-              <h3>{data.profile?.public_repos}</h3>
-              <p>Repos</p>
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+
+        </div>
+
+      )}
+
+      {/* Real Data */}
+      {data && !loading && (
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+
+          {/* Profile Card */}
+          <div className="bg-black/50 backdrop-blur-md rounded-xl shadow p-6 text-center text-white border-2 border-pink-950">
+
+            <img
+              src={data.profile?.avatar}
+              alt="avatar"
+              className="w-24 h-24 rounded-full mx-auto mb-4"
+            />
+
+            <h2 className="text-xl font-semibold">
+              {data.profile?.name}
+            </h2>
+
+            <div className="flex justify-around mt-4">
+
+              <div>
+                <p className="text-lg font-bold">
+                  {data.profile?.public_repos}
+                </p>
+                <p>Repos</p>
+              </div>
+
+              <div>
+                <p className="text-lg font-bold">
+                  {data.profile?.followers}
+                </p>
+                <p>Followers</p>
+              </div>
+
+              <div>
+                <p className="text-lg font-bold">
+                  {data.analysis?.total_stars}
+                </p>
+                <p>Stars</p>
+              </div>
+
             </div>
-            <div>
-              <h3>{data.profile?.followers}</h3>
-              <p>Followers</p>
-            </div>
-            <div>
-              <h3>{data.analysis?.total_stars}</h3>
-              <p>Stars</p>
-            </div>
+
           </div>
 
-          <hr />
+          {/* Languages */}
+          <div className="bg-black/50 backdrop-blur-md rounded-xl shadow p-6 text-center text-white border-2 border-pink-950">
 
-          <h3>Languages</h3>
-          <ul>
-            {data.analysis?.languages_used &&
-              Object.entries(data.analysis.languages_used).map(
-                ([lang, count]) => (
-                  <li key={lang}>
-                    {lang} — {count}
+            <h3 className="text-lg font-semibold mb-3">
+              Languages
+            </h3>
+
+            {data.analysis?.languages_used && (
+              <LanguageChart
+                languages={data.analysis.languages_used}
+              />
+            )}
+
+          </div>
+
+          {/* Top Repositories */}
+          <div className="bg-black/50 backdrop-blur-md rounded-xl shadow p-6 text-center text-white border-2 border-pink-950">
+
+            <h3 className="text-lg font-semibold mb-3">
+              Top Repositories
+            </h3>
+
+            <ul className="space-y-2">
+
+              {data.analysis?.top_repositories?.map((repo) => (
+
+                <li key={repo.name}>
+
+                  <a
+                    href={repo.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-indigo-400 hover:underline"
+                  >
+                    {repo.name}
+                  </a>
+
+                  ⭐ {repo.stars}
+
+                </li>
+
+              ))}
+
+            </ul>
+
+          </div>
+
+          {/* Portfolio Score */}
+          <div className="bg-black/50 backdrop-blur-md rounded-xl shadow p-6 text-center text-white border-2 border-pink-950">
+
+            <h3 className="text-lg font-semibold mb-3">
+              Portfolio Score
+            </h3>
+
+            <p className="text-2xl font-bold">
+              {data.analysis?.portfolio_score}/100
+            </p>
+
+            <div className="w-full bg-gray-700 rounded-full h-4 mt-4">
+
+              <div
+                className="bg-red-600 h-4 rounded-full transition-all duration-500"
+                style={{
+                  width: `${data.analysis?.portfolio_score}%`
+                }}
+              ></div>
+
+            </div>
+
+          </div>
+
+          {/* AI Summary */}
+          <div className="bg-black/50 backdrop-blur-md rounded-xl text-left text-white border-2 border-pink-950 shadow p-6 md:col-span-2">
+
+            <h3 className="text-lg font-semibold mb-5">
+              AI Summary
+            </h3>
+
+            <p>
+              {data.summary}
+            </p>
+
+          </div>
+
+          {/* Suggestions */}
+          {data?.suggestions?.length > 0 && (
+
+            <div className="bg-black/50 backdrop-blur-md rounded-xl shadow p-6 text-left text-white border-2 border-pink-950">
+
+              <h3 className="text-lg font-semibold mb-3">
+                Suggestions
+              </h3>
+
+              <ul className="list-disc ml-5 space-y-2">
+
+                {data.suggestions.map((s, i) => (
+
+                  <li key={i}>
+                    {s}
                   </li>
-                )
-              )}
-          </ul>
 
-          <hr />
+                ))}
 
-          <h3>Top Repositories</h3>
-          <ul>
-            {data.analysis?.top_repositories?.map((repo) => (
-              <li key={repo.name}>
-                <a
-                  href={repo.url}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {repo.name}
-                </a>{" "}
-                ⭐ {repo.stars}
-              </li>
-            ))}
-          </ul>
+              </ul>
 
-          <hr />
+            </div>
 
-          <h3>AI Summary</h3>
-          <p>{data.ai_summary}</p>
+          )}
 
-          <h3>Suggestions</h3>
-          <ul>
-            {data.suggestions?.map((s, i) => (
-              <li key={i}>{s}</li>
-            ))}
-          </ul>
         </div>
-      )}
-    </div>
-  );
-}
 
-const styles = {
-  container: {
-    background: "white",
-    padding: "30px",
-    borderRadius: "12px",
-    width: "400px",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
-    textAlign: "center"
-  },
-  title: {
-    marginBottom: "20px"
-  },
-  searchBox: {
-    display: "flex",
-    justifyContent: "center",
-    gap: "10px",
-    marginBottom: "20px"
-  },
-  input: {
-    padding: "8px",
-    width: "60%",
-    borderRadius: "6px",
-    border: "1px solid #ccc"
-  },
-  button: {
-    padding: "8px 15px",
-    borderRadius: "6px",
-    border: "none",
-    backgroundColor: "#667eea",
-    color: "white",
-    cursor: "pointer"
-  },
-  card: {
-    marginTop: "20px"
-  },
-  avatar: {
-    width: "100px",
-    borderRadius: "50%",
-    marginBottom: "10px"
-  },
-  stats: {
-    display: "flex",
-    justifyContent: "space-around",
-    margin: "15px 0"
-  }
-};
+      )}
+
+    </div>
+
+  );
+
+}
 
 export default Dashboard;
