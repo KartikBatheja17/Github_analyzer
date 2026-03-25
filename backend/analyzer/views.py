@@ -63,23 +63,27 @@ def analyze_profile(request,username):
         readme_present = False
         readme_length = 0
         has_installation = False
-        has_usage = 0
+        has_usage = False
         has_screenshot = False
 
         readme_url = f"https://api.github.com/repos/{username}/{repo['name']}/readme"
         readme_response = requests.get(readme_url)
 
         if readme_response.status_code == 200:
-            readme_present = True 
-
-            readme_json = readme_response.json() 
-            content = readme_json.get("content"," ")
-            decoded_content = base64.b64decode(content).decode("utf-8")
-            readme_length = len(decoded_content)
-            lower_content = decoded_content.lower()
-            has_installation = "installation" in lower_content 
-            has_usage = "usage" in lower_content
-            has_screenshots = "![" in decoded_content or "<img" in lower_content        
+            try:
+                readme_present = True 
+                readme_json = readme_response.json()
+                content = readme_json.get("content"," ")
+                if content:
+                    decoded_content = base64.b64decode(content).decode("utf-8")
+                    readme_length = len(decoded_content)
+                    lower_content = decoded_content.lower()
+                    has_installation = "installation" in lower_content 
+                    has_usage = "usage" in lower_content
+                    has_screenshots =( "![" in decoded_content or "<img" in lower_content   
+                    )
+            except Exception as e:
+                print("Readme decoding error",e)         
 
 
         top_repos.append({
@@ -96,16 +100,16 @@ def analyze_profile(request,username):
         })
         #readme_score logic
         
-    if readme_present:
-        readme_score += 2
-    if readme_length > 500:
-        readme_score += 2
-    if has_installation:
-        readme_score += 2
-    if has_usage:
-        readme_score += 2
-    if has_screenshots:
-        readme_score += 2
+        if readme_present:
+            readme_score += 2
+        if readme_length > 500:
+            readme_score += 2
+        if has_installation:
+            readme_score += 2
+        if has_usage:
+            readme_score += 2
+        if has_screenshots:
+            readme_score += 2
 
 
     # suggestions
@@ -190,5 +194,3 @@ def analyze_profile(request,username):
         "summary": summary,
         "suggestions": suggestions
     })
-
-    
