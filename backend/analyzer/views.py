@@ -67,7 +67,7 @@ def analyze_profile(request,username):
         has_screenshot = False
 
         readme_url = f"https://api.github.com/repos/{username}/{repo['name']}/readme"
-        readme_response = requests.get(readme_url)
+        readme_response = requests.get(readme_url,headers=header)
 
         if readme_response.status_code == 200:
             try:
@@ -85,19 +85,6 @@ def analyze_profile(request,username):
             except Exception as e:
                 print("Readme decoding error",e)         
 
-
-        top_repos.append({
-            "name": repo['name'],
-            "stars": repo['stargazers_count'],
-            "language": repo['language'],
-            "url": repo['html_url'],
-            "readme_present": readme_present,
-            "readme_length": readme_length,
-            "has_installation": has_installation,
-            "has_usage": has_usage,
-            "has_screenshots": has_screenshots,
-            "readme_score" : readme_score
-        })
         #readme_score logic
         
         if readme_present:
@@ -110,6 +97,20 @@ def analyze_profile(request,username):
             readme_score += 2
         if has_screenshots:
             readme_score += 2
+            
+        top_repos.append({
+            "name": repo['name'],
+            "stars": repo['stargazers_count'],
+            "language": repo['language'],
+            "url": repo['html_url'],
+            "readme_present": readme_present,
+            "readme_length": readme_length,
+            "has_installation": has_installation,
+            "has_usage": has_usage,
+            "has_screenshots": has_screenshots,
+            "readme_score" : readme_score
+        })
+
 
 
     # suggestions
