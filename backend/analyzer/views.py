@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import os
 import base64
+from django.http import JsonResponse
 
 token = os.getenv("GITHUB_TOKEN")
 header = {}
@@ -12,7 +13,9 @@ if token:
     print("HEADER VALUE", header)
 
 rate_check = requests.get("https://api.github.com/rate_limit", headers=header)
-print(rate_check.json())    
+
+def home(request):
+    return JsonResponse({"message": "GitHub Profile is running"})
 
 @api_view(['GET'])
 def analyze_profile(request,username):
