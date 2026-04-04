@@ -18,7 +18,7 @@ function Dashboard() {
       setData(null);
 
       const res = await axios.get(
-        `http://127.0.0.1:8000/api/analyze/${username}/`
+        `https://github-analyzer-720q.onrender.com/api/analyze/${username}/`
       );
 
       console.log("API DATA:", res.data);
