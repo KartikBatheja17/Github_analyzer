@@ -1,28 +1,57 @@
-# GitHub Profile Analyzer
+# 🚀 GitHub Analyzer – AI-Powered Developer Insights
 
-A full-stack web application that analyzes GitHub profiles and provides insights.
+An AI-powered web application that analyzes GitHub profiles and generates intelligent insights about developer skills, strengths, and career suggestions.
 
-## Features
-- Profile analysis
-- Repository statistics
-- Language breakdown
-- Top repositories
+## 🌐 Live Demo
 
+Frontend: https://your-vercel-url  
+Backend: https://github-analyzer-720q.onrender.com  
 
-## Tech Stack
-- Django (Backend)
-- React + Vite (Frontend)
+---
+
+## 🧠 Features
+
+- GitHub profile analysis
+- Repository insights
+- Language usage charts
+- AI-powered developer analysis
+- Skill evaluation
+- Strength & weakness detection
+- Career suggestions
+- Real-time API integration
+
+---
+
+## 🛠 Tech Stack
+
+Frontend:
+- React
 - Axios
-- GitHub REST API
+- Chart.js
 
-## Installation
+Backend:
+- Django
+- Django REST Framework
 
-### Backend
-cd backend
-pip install -r requirements.txt
-python manage.py runserver
+APIs:
+- GitHub API
+- Gemini AI API
 
-### Frontend
-cd frontend
-npm install
-npm run dev
+Deployment:
+- Render (Backend)
+- Vercel (Frontend)
+
+---
+
+## 📸 Screenshots
+
+(Add 2–3 screenshots here)
+
+---
+
+## ⚙️ Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/KartikBatheja17/Github_analyzer.git
