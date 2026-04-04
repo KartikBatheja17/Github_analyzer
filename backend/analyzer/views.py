@@ -4,6 +4,7 @@ from rest_framework.response import Response
 import os
 import base64
 from django.http import JsonResponse
+from .ai_utils import generate_ai_analysis
 
 token = os.getenv("GITHUB_TOKEN")
 header = {}
@@ -174,7 +175,9 @@ def analyze_profile(request,username):
     with {total_stars} total stars. Primary focus appears to be {primary_language} .
     Documentation quality is {'strong' if readme_score > 6 else 'need improvement'}.
     """
-    
+    # Generate AI analysis
+    ai_analysis = generate_ai_analysis(profile_data, repos_data)
+    print("AI Analysis:", ai_analysis)
 
     return Response({
         "profile": {
@@ -193,5 +196,6 @@ def analyze_profile(request,username):
             "portfolio_score": portfolio_score
         },
         "summary": summary,
-        "suggestions": suggestions
+        "suggestions": suggestions,
+        "ai_analysis": ai_analysis
     })
