@@ -1,4 +1,4 @@
-# 🚀 GitHub Analyzer – AI-Powered Developer Insights
+#  GitHub Analyzer – AI-Powered Developer Insights
 
 An AI-powered web application that analyzes GitHub profiles and generates intelligent insights about developer skills, strengths, and career suggestions.
 
@@ -9,7 +9,7 @@ Backend: https://github-analyzer-720q.onrender.com
 
 ---
 
-## 🧠 Features
+## Features
 
 - GitHub profile analysis
 - Repository insights
@@ -22,7 +22,7 @@ Backend: https://github-analyzer-720q.onrender.com
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 Frontend:
 - React
@@ -41,11 +41,6 @@ Deployment:
 - Render (Backend)
 - Vercel (Frontend)
 
----
-
-## 📸 Screenshots
-
-(Add 2–3 screenshots here)
 
 ---
 
