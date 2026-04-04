@@ -1,5 +1,5 @@
 import os
-from google import genai
+import google.generativeai as genai
 
 def generate_ai_analysis(profile_data, repos_data):
     try:
@@ -20,7 +20,7 @@ def generate_ai_analysis(profile_data, repos_data):
         Do NOT use 
         - markdown
         - bullet symbols(*)
-        
+
 
         Username: {username}
         Public Repositories: {repo_count}
